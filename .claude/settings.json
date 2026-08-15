@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Bash(python3 wiki/script/route.py *)",
+      "Bash(python3 wiki/script/lint.py *)"
+    ]
+  }
+}

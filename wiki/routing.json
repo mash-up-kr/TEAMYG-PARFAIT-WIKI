@@ -1,0 +1,17 @@
+{
+  "domains": ["onboarding", "canvas", "group-list", "group-side", "app-side"],
+  "intents": {
+    "query": {
+      "files": ["wiki/domains/{domain}.md"]
+    },
+    "ingest": {
+      "files": ["raw/{domain}/*.md", "wiki/domains/{domain}.md", "wiki/conventions.md"]
+    },
+    "lint": {
+      "files": ["wiki/domains/*.md", "wiki/conventions.md"]
+    },
+    "add-domain": {
+      "files": ["wiki/conventions.md", "wiki/index.md", "wiki/routing.json"]
+    }
+  }
+}
