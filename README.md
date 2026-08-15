@@ -57,6 +57,24 @@ git submodule update --init --recursive
 
 동기화 후 서브모듈 포인터가 바뀌면 이 저장소에도 커밋해야 팀원에게 전파됩니다. 스크립트가 변경 여부와 커밋 명령을 안내합니다.
 
+## 정책 ↔ 구현 대조 감사
+
+`wiki/domains/`의 정책 규칙이 각 플랫폼에 실제로 구현되어 있는지 전수 대조하고 HTML 보고서를 만듭니다. Claude에게 요청하면 됩니다.
+
+```
+정책이랑 구현이랑 맞는지 대조해줘        (또는 /policy-impl-audit)
+```
+
+규칙마다 플랫폼별로 `맞게 구현` / `잘못 구현` / `미구현` / `대상 아님` 중 하나를 판정합니다. 보고서는 상단에 플랫폼별 요약 수치, 하단에 규칙별 근거(파일·줄 번호)를 담습니다.
+
+결과물은 분석 **시작 시각** 기준으로 이름이 붙습니다.
+
+```
+reports/policy-audit-YYYYMMDD-HHMMSS.html
+```
+
+절차는 [`.claude/skills/policy-impl-audit/SKILL.md`](.claude/skills/policy-impl-audit/SKILL.md)에 정의되어 있고, 렌더링은 `render_report.py`가 담당합니다. 판정 근거가 없는 `맞게 구현`은 스크립트가 거부합니다.
+
 ## 스크립트 (내부 도구 / 수동 검증용)
 
 `wiki/script/route.py`는 Claude가 질문마다 내부적으로 호출하는 라우팅 도구입니다. 사람이 직접 쓸 일은 거의 없지만, 디버깅 시 아래처럼 확인할 수 있습니다.

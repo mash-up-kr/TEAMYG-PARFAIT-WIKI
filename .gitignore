@@ -2,6 +2,10 @@ docs
 
 .claude/settings.local.json
 
+# policy-impl-audit 산출물 — 실행마다 새로 생기고 스킬로 재생성할 수 있다.
+# 특정 보고서를 공유해야 하면 `git add -f reports/<파일>` 로 개별 추가한다.
+reports/
+
 .DS_Store
 __pycache__/
 *.pyc
