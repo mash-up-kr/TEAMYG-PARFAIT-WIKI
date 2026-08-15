@@ -5,8 +5,8 @@ name: sync-external
 
 on:
   schedule:
-    # [임시] 예약 트리거 동작 점검용. 확인 후 '0 0 * * *' 로 되돌린다.
-    - cron: '*/5 * * * *'
+    # 매일 00:00 UTC = KST 09:00. cron 은 항상 UTC 기준이다.
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 permissions:
