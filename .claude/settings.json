@@ -3,7 +3,11 @@
     "allow": [
       "Read",
       "Bash(python3 wiki/script/route.py *)",
-      "Bash(python3 wiki/script/lint.py *)"
+      "Bash(python3 wiki/script/lint.py *)",
+      "Bash(python3 .claude/skills/policy-impl-audit/render_report.py *)",
+      "Bash(./wiki/script/sync-external.sh)",
+      "Bash(git submodule status)",
+      "Bash(date +*)"
     ]
   }
 }

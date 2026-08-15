@@ -1,0 +1,87 @@
+name: sync-external
+
+# external/ 서브모듈(android·ios·server)을 매일 각자의 추적 브랜치 최신으로 올린다.
+# 동기화 로직은 wiki/script/sync-external.sh 하나에만 두고 여기서는 호출만 한다.
+
+on:
+  schedule:
+    # 매일 00:00 UTC = KST 09:00. cron 은 항상 UTC 기준이다.
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# 이전 실행이 끝나기 전에 다음 실행이 겹쳐 push 가 충돌하는 것을 막는다.
+concurrency:
+  group: sync-external
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 체크아웃
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          # push 할 때 쓸 자격증명을 남겨둔다(기본값이지만 의도를 드러낸다).
+          persist-credentials: true
+
+      - name: 서브모듈 최신화
+        run: ./wiki/script/sync-external.sh
+
+      - name: 변경 확인
+        id: check
+        run: |
+          if git diff --quiet -- external; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "변경 없음 — 세 레포 모두 이미 최신이다." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 커밋 본문 작성
+        if: steps.check.outputs.changed == 'true'
+        id: body
+        run: |
+          {
+            echo "body<<COMMIT_BODY_EOF"
+            for d in android ios server; do
+              before=$(git rev-parse "HEAD:external/$d")
+              after=$(git -C "external/$d" rev-parse HEAD)
+              if [ "$before" != "$after" ]; then
+                branch=$(git config -f .gitmodules "submodule.external/$d.branch")
+                echo "- $d ($branch): ${before:0:7} → ${after:0:7}"
+              fi
+            done
+            echo
+            echo "wiki/script/sync-external.sh 를 실행한 결과이며 사람이 개입하지 않았다."
+            echo "COMMIT_BODY_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: 커밋·푸시
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          git add external
+          git commit -m 'chore: external 서브모듈 동기화' -m "${{ steps.body.outputs.body }}"
+
+          # 예약 실행 사이에 사람이 main 에 푸시했을 수 있다. 서브모듈 포인터만
+          # 바꾸는 커밋이라 rebase 로 얹어도 충돌 여지가 거의 없다.
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: 요약
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          {
+            echo "### 서브모듈 동기화 완료"
+            echo
+            echo '```'
+            git submodule status
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

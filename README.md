@@ -57,6 +57,14 @@ git submodule update --init --recursive
 
 동기화 후 서브모듈 포인터가 바뀌면 이 저장소에도 커밋해야 팀원에게 전파됩니다. 스크립트가 변경 여부와 커밋 명령을 안내합니다.
 
+### 자동 동기화
+
+[`.github/workflows/sync-external.yml`](.github/workflows/sync-external.yml)이 **매일 09:00(KST)** 에 위 스크립트를 실행하고, 포인터가 바뀌었으면 `main`에 바로 커밋·푸시합니다. 변경이 없으면 아무것도 하지 않습니다.
+
+- 수동 실행: GitHub Actions 탭에서 `sync-external` → `Run workflow`
+- 커밋 주체는 `github-actions[bot]`이며 커밋 본문에 서브모듈별 `이전 → 이후` SHA가 남습니다
+- 예약 워크플로는 저장소가 60일간 활동이 없으면 GitHub가 자동 비활성화합니다
+
 ## 정책 ↔ 구현 대조 감사
 
 `wiki/domains/`의 정책 규칙이 각 플랫폼에 실제로 구현되어 있는지 전수 대조하고 HTML 보고서를 만듭니다. Claude에게 요청하면 됩니다.
