@@ -20,10 +20,42 @@ wiki/conventions.md               # frontmatter 규칙, 인용 규칙, 파일명
 wiki/routing.json                 # intent/domain별로 읽어야 할 파일 목록 정의
 wiki/script/route.py              # routing.json을 바탕으로 파일 목록을 계산하는 CLI
 wiki/script/lint.py                # 위키 문서 정합성 검증 CLI
+wiki/script/sync-external.sh       # external/ 서브모듈 동기화 CLI
 wiki/script/tests/                 # 위 스크립트들의 unittest
+external/<platform>/               # 플랫폼별 구현 레포 (git submodule, 읽기 전용)
 ```
 
 현재 도메인: `onboarding`, `canvas`, `group-list`, `group-side`, `app-side`.
+
+## 연동된 구현 레포 (`external/`)
+
+정책과 실제 구현을 교차 참조하기 위해 플랫폼 레포를 git submodule로 연결해 둡니다. **읽기 전용**이며, 이 저장소에서 수정하지 않습니다.
+
+| 경로 | 원본 | 추적 브랜치 |
+|---|---|---|
+| `external/android` | [mash-up-kr/TEAMYG-Android](https://github.com/mash-up-kr/TEAMYG-Android) | `develop` |
+| `external/server` | [mash-up-kr/TEAMYG-SERVER](https://github.com/mash-up-kr/TEAMYG-SERVER) | `main` |
+| `external/ios` | [mash-up-kr/TEAMYG-iOS](https://github.com/mash-up-kr/TEAMYG-iOS) | `main` |
+
+처음 클론할 때:
+
+```
+git clone --recurse-submodules <this-repo>
+```
+
+이미 클론했다면:
+
+```
+git submodule update --init --recursive
+```
+
+최신 커밋으로 동기화 (추적 브랜치 기준):
+
+```
+./wiki/script/sync-external.sh
+```
+
+동기화 후 서브모듈 포인터가 바뀌면 이 저장소에도 커밋해야 팀원에게 전파됩니다. 스크립트가 변경 여부와 커밋 명령을 안내합니다.
 
 ## 스크립트 (내부 도구 / 수동 검증용)
 

@@ -14,7 +14,18 @@
    python3 wiki/script/route.py --intent <intent> --domain <domain>
    ```
 
-4. 위 목록에 있는 파일만 읽는다. 목록 밖의 파일은 읽지 않는다.
+4. 위 목록에 있는 파일만 읽는다. 목록 밖의 파일은 읽지 않는다. 단 `external/`은 아래 예외를 따른다.
+
+## `external/` 구현 레포 참조
+
+`external/android`(TEAMYG-Android), `external/server`(TEAMYG-SERVER), `external/ios`(TEAMYG-iOS)는 플랫폼별 구현 레포를 git submodule로 연결한 **읽기 전용** 사본이다.
+
+- 기본적으로 읽지 않는다. 3단계의 파일 목록에 포함되지 않으며, 정책 질문의 근거는 언제나 `wiki/domains/`다.
+- 사용자가 구현과의 대조를 명시적으로 요청할 때만(예: "정책대로 구현됐는지 확인", "안드로이드 코드에선 어떻게 처리해?") 해당 플랫폼 디렉터리를 읽는다.
+- 구현 코드는 **정책 근거가 아니다.** 코드를 인용할 때는 `<doc_code> §<절번호>` 인용과 구분해 `external/android/...:<line>` 형태의 파일 경로로 밝히고, "정책 문서 기준"과 "현재 구현 기준"을 명확히 나눠 서술한다.
+- 정책과 구현이 어긋나면 어느 쪽이 옳은지 단정하지 말고 불일치 사실만 보고한다.
+- `external/` 하위 파일은 절대 수정하지 않는다. 수정이 필요하면 해당 원본 레포에서 작업한다.
+- 동기화는 `./wiki/script/sync-external.sh`로 한다. 자동으로 커밋하지 않는다.
 
 ## query 응답 규칙
 

@@ -1,0 +1,12 @@
+[submodule "external/android"]
+	path = external/android
+	url = https://github.com/mash-up-kr/TEAMYG-Android
+	branch = develop
+[submodule "external/server"]
+	path = external/server
+	url = https://github.com/mash-up-kr/TEAMYG-SERVER
+	branch = main
+[submodule "external/ios"]
+	path = external/ios
+	url = https://github.com/mash-up-kr/TEAMYG-iOS
+	branch = main
